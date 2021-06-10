@@ -649,7 +649,13 @@ defmodule HtmlSanitizeEx.Scrubber.HTML5 do
 
   Meta.allow_tag_with_uri_attributes(
     "img",
-    ["src", "lowsrc", "srcset"],
+    ["src"],
+    ["data:image/png;base64," | @valid_schemes]
+  )
+
+  Meta.allow_tag_with_uri_attributes(
+    "img",
+    ["lowsrc", "srcset"],
     @valid_schemes
   )
 

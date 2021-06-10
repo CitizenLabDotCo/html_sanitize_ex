@@ -207,7 +207,7 @@ defmodule HtmlSanitizeEx.Scrubber.Meta do
                         "mi"
                       )
 
-      @max_scheme_length 20
+      @max_scheme_length 22
 
       def scrub_attribute(unquote(tag_name), {unquote(attr_name), uri}) do
         valid_schema =
