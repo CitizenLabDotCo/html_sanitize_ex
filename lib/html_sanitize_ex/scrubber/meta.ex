@@ -201,9 +201,10 @@ defmodule HtmlSanitizeEx.Scrubber.Meta do
 
       @http_like_scheme "(?<scheme>.+?)(#{@protocol_separator})//"
       @other_schemes "(?<other_schemes>mailto)(#{@protocol_separator})"
+      @base64_image_scheme "(?<base64_image_scheme>data:image/png;base64,)"
 
       @scheme_capture Regex.compile!(
-                        "(#{@http_like_scheme})|(#{@other_schemes})",
+                        "(#{@http_like_scheme})|(#{@other_schemes})|(#{@base64_image_scheme})",
                         "mi"
                       )
 
@@ -213,10 +214,13 @@ defmodule HtmlSanitizeEx.Scrubber.Meta do
         valid_schema =
           if uri =~ @protocol_separator_regex do
             case Regex.named_captures(@scheme_capture, uri |> String.slice(0..@max_scheme_length)) do
-              %{"scheme" => scheme, "other_schemes" => ""} ->
+              %{"scheme" => scheme, "other_schemes" => "", "base64_image_scheme" => ""} ->
                 scheme in unquote(valid_schemes)
 
-              %{"other_schemes" => scheme, "scheme" => ""} ->
+              %{"other_schemes" => scheme, "scheme" => "", "base64_image_scheme" => ""} ->
+                scheme in unquote(valid_schemes)
+
+              %{"base64_image_scheme" => scheme, "scheme" => "", "other_schemes" => ""} ->
                 scheme in unquote(valid_schemes)
 
               _ ->
